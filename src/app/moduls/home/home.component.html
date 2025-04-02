@@ -1,0 +1,226 @@
+<div class="min-h-screen bg-gray-100 p-5">
+  <div class="flex justify-end pt-5 pr-52">
+    <button
+      (click)="logout()"
+      class="flex items-center text-xs gap-2 text-cyan-800 px-2 py-1 rounded hover:bg-cyan-800 hover:text-white shadow"
+    >
+      Logout
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-5 h-5"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 8l4 4m0 0l-4 4m4-4H3"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <div class="w-screen flex flex-col items-center relative">
+    <label
+      for="search"
+      class="block text-2xl font-sans text-cyan-700 text-center pb-7 pt-6"
+    >
+      SEARCH CUSTOMER
+    </label>
+
+    <div class="relative flex items-center w-full max-w-xl">
+      <!-- Search Icon -->
+      <svg
+        class="absolute left-3 text-gray-400 w-6 h-6"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+      >
+        <path fill="none" d="M0 0h24v24H0z" />
+        <path
+          d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0111 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 01-1.969 5.617zm-2.006-.742A6.977 6.977 0 0018 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 004.875-1.975l.15-.15z"
+        />
+      </svg>
+
+      <!-- Search Input -->
+      <input
+        id="search"
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="onInputChange()"
+        placeholder="Search by name"
+        class="w-screen pl-12 pr-4 h-10 border-b-2 border-gray-300 text-gray-700 rounded-lg shadow-sm focus:outline-none focus:bg-white hover:bg-slate-100"
+      />
+
+      <app-addusersvg
+        class="cursor-pointer ml-4"
+        (click)="openAddCustomerModal()"
+      ></app-addusersvg>
+      <app-userlistsvg
+        class="cursor-pointer ml-4"
+        (click)="loadAllCustomers()"
+      ></app-userlistsvg>
+    </div>
+    <ul
+      *ngIf="suggestions.length > 0"
+      class="absolute z-10 top-full mt-2 bg-white border w-full max-w-xl rounded shadow"
+    >
+      <li
+        *ngFor="let suggestion of suggestions"
+        (click)="selectCustomerFromList(suggestion)"
+        class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+      >
+        {{ suggestion.customerName }} - {{ suggestion.customerNumber }}
+      </li>
+    </ul>
+  </div>
+  <!-- Add Customer Modal -->
+  <app-modal
+    *ngIf="showAddCustomerModal"
+    (closeModal)="closeAddCustomerModal()"
+  >
+    <app-customer-form
+      (customerCreated)="onCustomerAdded($event)"
+    ></app-customer-form>
+  </app-modal>
+
+  <!-- Not Found Message -->
+  <div *ngIf="notFound" class="text-red-600 text-center text-lg mt-4">
+    {{ notFound }}
+  </div>
+
+  <div
+    *ngIf="showCustomerList"
+    class="w-full max-w-2xl mt-10 bg-white p-5 rounded-lg shadow-lg mx-auto overflow-auto"
+  >
+    <div
+      class="flex justify-center items-center w-full rounded-md h-20 bg-cyan-800"
+    >
+      <h3 class="text-2xl font-sans text-white">All Customers</h3>
+    </div>
+    <div class="pb-6"></div>
+
+    <ul class="divide-y divide-gray-200">
+      <li
+        *ngFor="let c of customerList"
+        (click)="onCustomerClickFromList(c)"
+        class="px-4 py-3 hover:bg-gray-100 cursor-pointer text-lg text-gray-800"
+      >
+        {{ c.customerName }} - {{ c.customerNumber }}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Customer Info Card -->
+  <div
+    *ngIf="customer"
+    class="w-full max-w-2xl mt-10 bg-white p-5 rounded-lg shadow-lg mx-auto"
+  >
+    <div
+      class="flex justify-center items-center w-full rounded-md h-20 bg-cyan-800"
+    >
+      <h3 class="text-3xl font-sans text-white mb-6">Customer Information</h3>
+    </div>
+    <div class="pb-8"></div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div>
+        <label class="text-xl font-sans text-cyan-700">Customer Name:</label>
+        <div
+          class="w-full p-3 border-b-2 bg-slate-50 border-gray-300 rounded-lg shadow-sm"
+        >
+          {{ customer.customerName }}
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xl font-sans text-cyan-700">Customer Number:</label>
+        <div
+          class="w-full p-3 border-b-2 bg-slate-50 border-gray-300 rounded-lg shadow-sm"
+        >
+          {{ customer.customerNumber }}
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xl font-sans text-cyan-700">Date of Birth:</label>
+        <div
+          class="w-full p-3 border-b-2 bg-slate-50 border-gray-300 rounded-lg shadow-sm"
+        >
+          {{ customer.dateOfBirth | date }}
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xl font-sans text-cyan-700">Gender:</label>
+        <div
+          class="w-full p-3 border-b-2 bg-slate-50 border-gray-300 rounded-lg shadow-sm"
+        >
+          {{ customer.gender }}
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-end gap-8 mt-6">
+      <!-- Edit Customer Button -->
+      <button
+        (click)="openEditModal()"
+        class="flex items-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M16.862 4.487c-.58-.58-1.522-.58-2.103 0l-1.272 1.272 2.103 2.103 1.272-1.272a1.485 1.485 0 0 0 0-2.103zM11.362 7.987l-6.75 6.75V18h3.263l6.75-6.75-3.263-3.263z"
+          />
+        </svg>
+      </button>
+
+      <!-- Delete Customer Button -->
+      <!-- <button
+        (click)="openDeleteModal(customer.id)"
+        class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          aria-label="Delete User"
+          role="img"
+          fill="#000000"
+          width="24px"
+          height="24px"
+          viewBox="0 0 24 24"
+          id="delete-user"
+          class="text-white"
+        >
+          <title id="svgTitle">Delete User</title>
+          <path
+            d="M20.91,17.5l.8-.79a1,1,0,0,0-1.42-1.42l-.79.8-.79-.8a1,1,0,0,0-1.42,1.42l.8.79-.8.79a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l.79-.8.79.8a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42Z"
+            class="fill-white"
+          />
+          <path
+            d="M6,7a5,5,0,1,1,5,5A5,5,0,0,1,6,7Zm8,7H8a6,6,0,0,0-6,6,2,2,0,0,0,2,2H14a1,1,0,0,0,1-1V15A1,1,0,0,0,14,14Z"
+            class="fill-white"
+          />
+        </svg>
+        Delete
+      </button> -->
+    </div>
+  </div>
+</div>
+<app-modal
+  *ngIf="showEditCustomerModal"
+  (closeModal)="closeEditCustomerModal()"
+>
+  <app-edit-customer
+    [customer]="editCustomerData"
+    (updated)="onCustomerUpdated($event)"
+  ></app-edit-customer>
+</app-modal>

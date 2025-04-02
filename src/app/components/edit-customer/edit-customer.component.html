@@ -1,0 +1,66 @@
+<div class="bg-white p-6 rounded-lg shadow-lg w-[400px] mx-auto">
+  <h2 class="text-2xl font-bold text-center text-cyan-700 mb-6">
+    Edit Customer
+  </h2>
+  <form (ngSubmit)="submit()" #editForm="ngForm">
+    <div class="mb-4">
+      <label class="text-xl text-cyan-700">Customer Name:</label>
+      <input
+        [(ngModel)]="customer.customerName"
+        name="customerName"
+        required
+        class="w-full p-3 border-b-2 border-gray-300 rounded-lg shadow-sm"
+      />
+    </div>
+
+    <div class="mb-4">
+      <label class="text-xl text-cyan-700">Customer Number:</label>
+      <input
+        [(ngModel)]="customer.customerNumber"
+        name="customerNumber"
+        required
+        class="w-full p-3 border-b-2 border-gray-300 rounded-lg shadow-sm"
+      />
+    </div>
+
+    <div class="mb-4">
+      <label class="text-xl text-cyan-700">Date of Birth:</label>
+      <input
+        type="date"
+        [(ngModel)]="customer.dateOfBirth"
+        name="dateOfBirth"
+        required
+        class="w-full p-3 border-b-2 border-gray-300 rounded-lg shadow-sm"
+      />
+    </div>
+
+    <div class="mb-6">
+      <label class="text-xl text-cyan-700">Gender:</label>
+      <select
+        [(ngModel)]="customer.gender"
+        name="gender"
+        required
+        class="w-full p-3 border-b-2 border-gray-300 rounded-lg shadow-sm"
+      >
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+    </div>
+
+    <div class="flex justify-between">
+      <button
+        type="submit"
+        class="bg-cyan-700 text-white px-5 py-2 rounded hover:bg-cyan-800"
+      >
+        Save
+      </button>
+      <button
+        type="button"
+        class="bg-gray-400 text-white px-5 py-2 rounded hover:bg-gray-500"
+        (click)="cancel()"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</div>

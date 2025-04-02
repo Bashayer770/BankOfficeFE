@@ -1,0 +1,87 @@
+<div class="bg-white p-6 rounded shadow-lg flex flex-col w-[400px]">
+  <h3 class="text-2xl font-sans text-cyan-700 mb-6 text-center">
+    Add Customer
+  </h3>
+
+  <form #customerForm="ngForm" (ngSubmit)="submit()">
+    <div class="mb-4">
+      <div class="flex-row gap-2">
+        <label class="text-xl font-sans text-cyan-700">Customer Name:</label>
+        <label class="text-red-600 text-xl"> *</label>
+      </div>
+      <input
+        [(ngModel)]="customer.CustomerName"
+        name="customerName"
+        required
+        class="w-full p-3 border-b-2 bg-slate-50 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+      />
+    </div>
+
+    <div class="mb-4">
+      <div class="flex-row gap-2">
+        <label class="text-xl font-sans text-cyan-700">Customer Number:</label>
+        <label class="text-red-600 text-xl"> *</label>
+      </div>
+      <input
+        [(ngModel)]="customer.CustomerNumber"
+        name="customerNumber"
+        required
+        pattern="^[0-9]{5,20}$"
+        class="w-full p-3 border-b-2 bg-slate-50 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+        #customerNumber="ngModel"
+      />
+      <div
+        *ngIf="customerNumber.errors?.['required'] && customerNumber.touched"
+        class="text-red-500"
+      >
+        Customer Number is required.
+      </div>
+      <div
+        *ngIf="customerNumber.errors?.['pattern'] && customerNumber.touched"
+        class="text-red-500"
+      >
+        Customer Number must be between 5–20 digits.
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="flex-row gap-2">
+        <label class="text-xl font-sans text-cyan-700">Date of Birth:</label>
+        <label class="text-red-600 text-xl"> *</label>
+      </div>
+      <input
+        type="date"
+        [(ngModel)]="customer.DateOfBirth"
+        name="dateOfBirth"
+        required
+        class="w-full p-3 border-b-2 bg-slate-50 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+      />
+    </div>
+
+    <div class="mb-6">
+      <div class="flex-row gap-2">
+        <label class="text-xl font-sans text-cyan-700">Gender:</label>
+        <label class="text-red-600 text-xl"> *</label>
+      </div>
+      <select
+        [(ngModel)]="customer.Gender"
+        name="gender"
+        required
+        class="w-full p-3 border-b-2 bg-slate-50 border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-cyan-500"
+      >
+        <option value="" disabled selected>Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+    </div>
+
+    <div class="flex justify-center">
+      <button
+        type="submit"
+        class="w-40 p-3 bg-cyan-700 text-white rounded-lg hover:bg-cyan-800 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+      >
+        Save Customer
+      </button>
+    </div>
+  </form>
+</div>
